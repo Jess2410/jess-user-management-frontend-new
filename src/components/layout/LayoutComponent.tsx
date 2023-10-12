@@ -20,6 +20,7 @@ import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import Button from "@mui/material/Button";
 import PermissionsTable from "../permissionsTable/PermissionsTable";
+import PermissionForm from "../permissionForm/PermissionForm";
 
 const drawerWidth = 240;
 
@@ -169,7 +170,8 @@ export default function MiniDrawer() {
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
         <Box>
-          <PermissionsTable />
+          <PermissionForm />
+          {/* <PermissionsTable /> */}
         </Box>
       </Box>
     </Box>
