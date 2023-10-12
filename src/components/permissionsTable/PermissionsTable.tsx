@@ -1,25 +1,20 @@
 import { MaterialReactTable } from "material-react-table";
-import { usePermissionsColumns } from "./hooks/usePermissionsColumns";
-import { Permission } from "../../types/permission.type";
-
-const data: Permission[] = [
-  {
-    id: 1,
-    key: "JOHN",
-    title: "HELLO",
-    description: "Hey salut je suis la description",
-  },
-];
+import { usePermissions } from "./hooks/usePermissions";
 
 export default function PermissionsTable() {
-  const columns = usePermissionsColumns();
+  const { data: dataRTK, columns } = usePermissions();
+  console.log(
+    "🚀 ~ file: PermissionsTable.tsx:17 ~ PermissionsTable ~ dataRTK:",
+    dataRTK
+  );
 
   return (
     <MaterialReactTable
       columns={columns}
-      data={data}
+      data={dataRTK}
       enableColumnOrdering
       enableGlobalFilter={false}
+      initialState={{ columnVisibility: { id: false } }}
     />
   );
 }
