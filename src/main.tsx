@@ -9,6 +9,8 @@ import PermissionPage from "./features/Layout/permissions/PermissionPage.tsx";
 import PermissionAddPage from "./features/Layout/permissions/PermissionAddPage.tsx";
 import AccountPage from "./features/Layout/accounts/AccountPage.tsx";
 import AccountAddPage from "./features/Layout/accounts/AccountAddPage.tsx";
+import RolePage from "./features/Layout/roles/RolePage.tsx";
+import RoleAddPage from "./features/Layout/roles/RoleAddPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -30,6 +32,14 @@ const router = createBrowserRouter([
   {
     path: "/account/add",
     element: <AccountAddPage />,
+  },
+  {
+    path: "/roles",
+    element: <RolePage />,
+  },
+  {
+    path: "/role/add",
+    element: <RoleAddPage />,
   },
 ]);
 
