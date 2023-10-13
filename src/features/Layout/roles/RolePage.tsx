@@ -2,6 +2,7 @@ import PermissionsTable from "../../../components/permissionsTable/PermissionsTa
 import { Box, Button } from "@mui/material";
 import Layout from "../Layout";
 import { useNavigate } from "react-router-dom";
+import RolesTable from "../../../components/roleTable/RolesTable";
 
 const RolePage = () => {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ const RolePage = () => {
             Add
           </Button>
         </Box>
-        <PermissionsTable />
+        <RolesTable />
       </Layout>
     </div>
   );
