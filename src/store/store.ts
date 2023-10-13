@@ -3,6 +3,7 @@ import { setupListeners } from "@reduxjs/toolkit/query";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { permissionApi } from "../api/Permission.api";
 import { accountApi } from "../api/Account.api";
+import { roleApi } from "../api/Role.api";
 
 // import { queryMessageHandler } from './middlewares/queryMessagesHandler';
 
@@ -13,11 +14,13 @@ export const createStore = (
     reducer: {
       [permissionApi.reducerPath]: permissionApi.reducer,
       [accountApi.reducerPath]: accountApi.reducer,
+      [roleApi.reducerPath]: roleApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().concat(
         permissionApi.middleware,
-        accountApi.middleware
+        accountApi.middleware,
+        roleApi.middleware
       ),
     ...options,
   });
