@@ -7,6 +7,8 @@ import { store } from "./store/store.ts";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import PermissionPage from "./features/Layout/permissions/PermissionPage.tsx";
 import PermissionAddPage from "./features/Layout/permissions/PermissionAddPage.tsx";
+import AccountPage from "./features/Layout/accounts/AccountPage.tsx";
+import AccountAddPage from "./features/Layout/accounts/AccountAddPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -20,6 +22,14 @@ const router = createBrowserRouter([
   {
     path: "/permission/add",
     element: <PermissionAddPage />,
+  },
+  {
+    path: "/accounts",
+    element: <AccountPage />,
+  },
+  {
+    path: "/account/add",
+    element: <AccountAddPage />,
   },
 ]);
 
