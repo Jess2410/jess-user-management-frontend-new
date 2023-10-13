@@ -16,11 +16,36 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
 import Button from "@mui/material/Button";
+import {
+  AccountBox as AccountBoxIcon,
+  GppGood as GppGoodIcon,
+  SupervisedUserCircle as SupervisedUserCircleIcon,
+} from "@mui/icons-material";
+import {
+  ACCOUNTS_LINK,
+  PERMISSIONS_LINK,
+  ROLES_LINK,
+} from "../../constants/routes";
+import { Link } from "react-router-dom";
 
 const drawerWidth = 240;
+
+const DATA_LIST = [
+  {
+    name: "Accounts",
+    key: 1,
+    icon: <SupervisedUserCircleIcon />,
+    link: ACCOUNTS_LINK,
+  },
+  { name: "Roles", key: 2, icon: <AccountBoxIcon />, link: ROLES_LINK },
+  {
+    name: "Permissions",
+    key: 3,
+    icon: <GppGoodIcon />,
+    link: PERMISSIONS_LINK,
+  },
+];
 
 const openedMixin = (theme: Theme): CSSObject => ({
   width: drawerWidth,
@@ -141,27 +166,19 @@ export default function Layout({ children }: React.PropsWithChildren) {
         </DrawerHeader>
         <Divider />
         <List>
-          {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-            <ListItem key={text} disablePadding sx={{ display: "block" }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? "initial" : "center",
-                  px: 2.5,
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : "auto",
-                    justifyContent: "center",
-                  }}
-                >
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
+          {DATA_LIST.map((item) => (
+            <Link
+              key={item.key}
+              to={item.link}
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <ListItem disablePadding>
+                <ListItemButton>
+                  <ListItemIcon>{item.icon}</ListItemIcon>
+                  <ListItemText primary={item.name} />
+                </ListItemButton>
+              </ListItem>
+            </Link>
           ))}
         </List>
       </Drawer>

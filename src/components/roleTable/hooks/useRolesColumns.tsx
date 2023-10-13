@@ -8,20 +8,16 @@ export const useRolesColumns = (): useRolesColumnReturn => {
   const columns = useMemo<MRT_ColumnDef<Role>[]>(
     (): MRT_ColumnDef<Role>[] => [
       {
-        accessorKey: "id",
-        header: "Id",
+        accessorKey: "key",
+        header: "Key",
       },
       {
-        accessorKey: "firstName",
-        header: "Firstname",
+        accessorKey: "title",
+        header: "Title",
       },
       {
-        accessorKey: "lastName",
-        header: "Lastname",
-      },
-      {
-        accessorKey: "permissions",
-        header: "Permissions",
+        accessorKey: "description",
+        header: "Description",
       },
     ],
     []
