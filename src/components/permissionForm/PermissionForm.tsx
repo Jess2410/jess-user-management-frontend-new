@@ -3,8 +3,10 @@ import { Button, Container, TextField, CircularProgress } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { permissionSchemaNoId } from "../../types/permission.type";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "react-router-dom";
 
 const PermissionForm = () => {
+  const navigate = useNavigate();
   const {
     handleSubmit,
     control,
@@ -71,7 +73,9 @@ const PermissionForm = () => {
             {errors.description && <p>{errors.description.message}</p>}
           </Box>
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-            <Button variant="outlined">Cancel</Button>
+            <Button variant="outlined" onClick={() => navigate("/permissions")}>
+              Cancel
+            </Button>
             <Button type="submit" variant="contained">
               Add
             </Button>

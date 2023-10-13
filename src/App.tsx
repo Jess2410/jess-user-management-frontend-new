@@ -4,7 +4,9 @@ import Layout from "./features/Layout/Layout";
 function App() {
   return (
     <>
-      <Layout />
+      <Layout>
+        <p>Bienvenue</p>
+      </Layout>
     </>
   );
 }
