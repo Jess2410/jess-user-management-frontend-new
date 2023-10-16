@@ -1,6 +1,7 @@
 import { type MRT_ColumnDef } from "material-react-table";
 import { useMemo } from "react";
 import { Role } from "../../../types/role.type";
+import ButtonDetails from "../../ButtonDetails/ButtonDetails";
 
 type useRolesColumnReturn = MRT_ColumnDef<Role>[];
 
@@ -18,6 +19,20 @@ export const useRolesColumns = (): useRolesColumnReturn => {
       {
         accessorKey: "description",
         header: "Description",
+      },
+      {
+        accessorKey: "permissions",
+        header: "Permissions",
+        Cell: ({ cell }) => {
+          return (
+            <ButtonDetails
+              itemsList={cell.row.original.permissions}
+              nameList="permissions"
+            >
+              View More
+            </ButtonDetails>
+          );
+        },
       },
     ],
     []

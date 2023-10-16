@@ -1,4 +1,3 @@
-import PermissionsTable from "../../../components/permissionsTable/PermissionsTable";
 import { Box, Button } from "@mui/material";
 import Layout from "../Layout";
 import { useNavigate } from "react-router-dom";
