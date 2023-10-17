@@ -46,6 +46,7 @@ export const permissionApi = createApi({
 
 export const {
   useGetPermissionsQuery,
+  useLazyGetPermissionsQuery,
   useGetPermissionByIdQuery,
   useLazyGetPermissionByIdQuery,
 } = permissionApi;

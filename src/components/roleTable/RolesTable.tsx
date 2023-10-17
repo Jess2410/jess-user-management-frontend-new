@@ -3,6 +3,7 @@ import { useRoles } from "./hooks/useRoles";
 import { Box, IconButton } from "@mui/material";
 import { Delete as DeleteIcon, Edit as EditIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import { useGetPermissionsQuery } from "../../api/Permission.api";
 
 export default function RolesTable() {
   const { data, columns } = useRoles();
