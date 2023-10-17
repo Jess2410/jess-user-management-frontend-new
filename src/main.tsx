@@ -26,6 +26,10 @@ const router = createBrowserRouter([
     element: <PermissionAddPage />,
   },
   {
+    path: "/permission/:id",
+    element: <PermissionAddPage />,
+  },
+  {
     path: "/accounts",
     element: <AccountPage />,
   },
@@ -34,11 +38,19 @@ const router = createBrowserRouter([
     element: <AccountAddPage />,
   },
   {
+    path: "/account/:id",
+    element: <AccountAddPage />,
+  },
+  {
     path: "/roles",
     element: <RolePage />,
   },
   {
     path: "/role/add",
+    element: <RoleAddPage />,
+  },
+  {
+    path: "/role/:id",
     element: <RoleAddPage />,
   },
 ]);

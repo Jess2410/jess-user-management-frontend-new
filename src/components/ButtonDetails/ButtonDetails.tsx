@@ -28,7 +28,9 @@ const ButtonDetails: React.FC<ButtonProps> = ({ itemsList, nameList }) => {
         <Divider />
         <List>
           {itemsList.length ? (
-            itemsList.map((item) => <ListItem>{item.key}</ListItem>)
+            itemsList.map((item) => (
+              <ListItem key={item.key}>{item.key}</ListItem>
+            ))
           ) : (
             <p style={{ textAlign: "center" }}>Pas de {nameList}</p>
           )}

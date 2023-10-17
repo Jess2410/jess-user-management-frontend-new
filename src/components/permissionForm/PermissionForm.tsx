@@ -3,16 +3,33 @@ import { Button, Container, TextField, CircularProgress } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { permissionSchemaNoId } from "../../types/permission.type";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useLazyGetPermissionByIdQuery } from "../../api/Permission.api";
 
 const PermissionForm = () => {
+  const params = useParams();
+
+  const [getPermissionById, { data }] = useLazyGetPermissionByIdQuery();
+
   const navigate = useNavigate();
   const {
     handleSubmit,
     control,
     formState: { isLoading, errors },
   } = useForm({
-    defaultValues: { key: "", title: "", description: "" },
+    defaultValues: async () => {
+      if (params.id) {
+        const { data } = await getPermissionById(Number(params.id));
+        console.log("DATAAAAAAAAAA:", data);
+        if (data) {
+          return data;
+        } else {
+          throw new Error("GetAccountById failed !");
+        }
+      } else {
+        return { key: "", title: "", description: "" };
+      }
+    },
     resolver: zodResolver(permissionSchemaNoId),
   });
 

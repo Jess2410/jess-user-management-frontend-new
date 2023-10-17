@@ -32,7 +32,20 @@ export const permissionApi = createApi({
         return sortedData;
       },
     }),
+    getPermissionById: build.query<Permission, number>({
+      query: (id) => ({
+        url: `${PERMISSION_API_ENDPOINTS.PERMISSION}/${id}`,
+      }),
+      transformResponse: (rawData) => {
+        return permissionSchema.parse(rawData);
+      },
+      providesTags: ["Permissions"],
+    }),
   }),
 });
 
-export const { useGetPermissionsQuery } = permissionApi;
+export const {
+  useGetPermissionsQuery,
+  useGetPermissionByIdQuery,
+  useLazyGetPermissionByIdQuery,
+} = permissionApi;

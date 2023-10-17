@@ -2,17 +2,27 @@ import Box from "@mui/material/Box";
 import { Button, Container, TextField, CircularProgress } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { roleFormSchema } from "../../types/role.type";
+import { useLazyGetRoleByIdQuery } from "../../api/Role.api";
 
 const RoleForm = () => {
   const navigate = useNavigate();
+  const params = useParams();
+  const [getRoleById, { data }] = useLazyGetRoleByIdQuery();
   const {
     handleSubmit,
     control,
     formState: { isLoading, errors },
   } = useForm({
-    defaultValues: { key: "", title: "", description: "", permissions: [] },
+    defaultValues: async () => {
+      if (params.id) {
+        const { data } = await getRoleById(Number(params.id));
+        return data;
+      } else {
+        return { key: "", title: "", description: "", permissions: [] };
+      }
+    },
     resolver: zodResolver(roleFormSchema),
   });
 
@@ -73,7 +83,7 @@ const RoleForm = () => {
             {errors.description && <p>{errors.description.message}</p>}
           </Box>
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-            <Button variant="outlined" onClick={() => navigate("/permissions")}>
+            <Button variant="outlined" onClick={() => navigate("/roles")}>
               Cancel
             </Button>
             <Button type="submit" variant="contained">
