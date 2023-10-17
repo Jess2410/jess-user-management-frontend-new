@@ -32,7 +32,20 @@ export const roleApi = createApi({
       },
       providesTags: ["Roles"],
     }),
+    getRoleById: build.query<Role, number>({
+      query: (id) => ({
+        url: `${ROLE_API_ENDPOINTS.ROLE}/${id}`,
+      }),
+      transformResponse: (rowData) => {
+        return roleSchema.parse(rowData);
+      },
+      providesTags: ["Roles"],
+    }),
   }),
 });
 
-export const { useGetRolesQuery } = roleApi;
+export const {
+  useGetRolesQuery,
+  useGetRoleByIdQuery,
+  useLazyGetRoleByIdQuery,
+} = roleApi;

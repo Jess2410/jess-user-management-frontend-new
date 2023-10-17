@@ -30,7 +30,20 @@ export const accountApi = createApi({
       },
       providesTags: ["Accounts"],
     }),
+    getAccountById: build.query<Account, number>({
+      query: (id) => ({
+        url: `${ACCOUNT_API_ENDPOINTS.ACCOUNT}/${id}`,
+      }),
+      providesTags: ["Accounts"],
+      transformResponse: (rawData) => {
+        return accountSchema.parse(rawData);
+      },
+    }),
   }),
 });
 
-export const { useGetAccountsQuery } = accountApi;
+export const {
+  useGetAccountsQuery,
+  useGetAccountByIdQuery,
+  useLazyGetAccountByIdQuery,
+} = accountApi;

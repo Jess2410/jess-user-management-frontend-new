@@ -2,17 +2,31 @@ import Box from "@mui/material/Box";
 import { Button, Container, TextField, CircularProgress } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { accountFormSchema } from "../../types/account.type";
+import { useLazyGetAccountByIdQuery } from "../../api/Account.api";
 
 const AccountForm = () => {
   const navigate = useNavigate();
+  const params = useParams();
+  console.log("🚀 ~ file: AccountForm.tsx:12 ~ AccountForm ~ params:", params);
+
+  const [getAccountById, { data }] = useLazyGetAccountByIdQuery();
+  console.log("🚀 ~ file: AccountForm.tsx:13 ~ AccountForm ~ data:", data);
   const {
     handleSubmit,
     control,
     formState: { isLoading, errors },
   } = useForm({
-    defaultValues: { firstName: "", lastName: "", roles: [] },
+    defaultValues: async () => {
+      if (params.id) {
+        const { data } = await getAccountById(Number(params.id));
+        return data;
+      } else {
+        return { firstName: "", lastName: "", roles: [] };
+      }
+    },
+
     resolver: zodResolver(accountFormSchema),
   });
 
