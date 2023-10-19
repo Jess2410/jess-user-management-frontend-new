@@ -2,7 +2,13 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithRetry } from "./prepareHeader";
 import { ENV } from "../constants/env.constant";
 import { ROLES_LINK } from "../constants/routes";
-import { Role, roleSchema } from "../types/role.type";
+import {
+  Role,
+  RoleNoId,
+  RoleSchemaResponseType,
+  roleSchema,
+  roleSchemaResponse,
+} from "../types/role.type";
 
 const ROLE_API_ENDPOINTS = {
   BASE_URL: "/",
@@ -41,6 +47,17 @@ export const roleApi = createApi({
       },
       providesTags: ["Roles"],
     }),
+    addRole: build.mutation<RoleSchemaResponseType, RoleNoId>({
+      // ce que le client envoie au serveur
+      query: (role) => ({
+        url: ROLE_API_ENDPOINTS.ROLE,
+        method: "POST",
+        body: role,
+      }),
+      invalidatesTags: ["Roles"],
+      // ce que le serveur repond au client
+      transformResponse: (rowData) => roleSchemaResponse.parse(rowData),
+    }),
   }),
 });
 
@@ -48,4 +65,5 @@ export const {
   useGetRolesQuery,
   useGetRoleByIdQuery,
   useLazyGetRoleByIdQuery,
+  useAddRoleMutation,
 } = roleApi;

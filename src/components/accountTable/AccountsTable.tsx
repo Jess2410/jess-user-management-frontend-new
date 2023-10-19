@@ -14,7 +14,7 @@ export default function AccountsTable() {
     console.log("update", id);
   };
   const handleDelete = (id: number) => {
-    console.log("delete");
+    console.log("delete", id);
   };
 
   return (

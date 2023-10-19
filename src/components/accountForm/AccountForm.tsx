@@ -3,16 +3,29 @@ import { Button, Container, TextField, CircularProgress } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, useParams } from "react-router-dom";
-import { accountFormSchema } from "../../types/account.type";
-import { useLazyGetAccountByIdQuery } from "../../api/Account.api";
+import { AccountNoId, accountFormSchema } from "../../types/account.type";
+import {
+  useAddAccountMutation,
+  useLazyGetAccountByIdQuery,
+} from "../../api/Account.api";
+import { useState } from "react";
+import { useGetRolesQuery } from "../../api/Role.api";
+import TransferList from "../transferList/TransferList";
+import { ACCOUNTS_LINK } from "../../constants/routes";
+import { useToast } from "../../hooks/useToast";
+import { Role } from "../../types/role.type";
 
 const AccountForm = () => {
   const navigate = useNavigate();
   const params = useParams();
-  console.log("🚀 ~ file: AccountForm.tsx:12 ~ AccountForm ~ params:", params);
+  const { showToast } = useToast();
 
-  const [getAccountById, { data }] = useLazyGetAccountByIdQuery();
-  console.log("🚀 ~ file: AccountForm.tsx:13 ~ AccountForm ~ data:", data);
+  const [addAccount] = useAddAccountMutation();
+  const { data: roles } = useGetRolesQuery();
+  const [getAccountById] = useLazyGetAccountByIdQuery();
+
+  const [selectedRoles, setSelectedRoles] = useState<Role[]>([]);
+
   const {
     handleSubmit,
     control,
@@ -20,8 +33,10 @@ const AccountForm = () => {
   } = useForm({
     defaultValues: async () => {
       if (params.id) {
-        const { data } = await getAccountById(Number(params.id));
-        return data;
+        const { data: account } = await getAccountById(Number(params.id));
+        setSelectedRoles(account?.roles || []);
+        console.log(setSelectedRoles);
+        return account;
       } else {
         return { firstName: "", lastName: "", roles: [] };
       }
@@ -30,6 +45,44 @@ const AccountForm = () => {
     resolver: zodResolver(accountFormSchema),
   });
 
+  const createAccount = async (newAccount: AccountNoId) => {
+    await addAccount({
+      lastName: newAccount.lastName,
+      firstName: newAccount.firstName,
+      roles: selectedRoles.map((selectedRole) => selectedRole.id),
+    })
+      .then((response) => {
+        showToast("Utilisateur ajouté avec succès", {
+          type: "success",
+        });
+
+        if ("error" in response) {
+          const typedError = response as {
+            error: { data: AccountNoId; status: number };
+          };
+          if (typedError.error.status === 500) {
+            showToast(
+              "Une erreur est survenue ! Merci de contacter le service client.",
+              {
+                type: "error",
+                autoClose: 3000,
+              }
+            );
+          }
+        }
+        navigate(ACCOUNTS_LINK);
+      })
+      .catch(() => {
+        showToast(
+          "Une erreur est survenue ! Merci de contacter le service client.",
+          {
+            type: "error",
+            autoClose: 3000,
+          }
+        );
+      });
+  };
+
   if (isLoading) {
     return <CircularProgress />;
   }
@@ -37,7 +90,7 @@ const AccountForm = () => {
   return (
     <div>
       <Container>
-        <form onSubmit={handleSubmit((data) => console.log(data))}>
+        <form onSubmit={handleSubmit(createAccount)}>
           <Box sx={{ mb: 3 }}>
             <Controller
               control={control}
@@ -53,7 +106,7 @@ const AccountForm = () => {
               )}
             />
           </Box>
-          {errors.firstName && <p>{errors.firstName.message}</p>}
+          {/* {errors.firstName && <p>{errors.firstName.message}</p>} */}
           <Box sx={{ mb: 3 }}>
             <Controller
               control={control}
@@ -69,9 +122,16 @@ const AccountForm = () => {
               )}
             />
           </Box>
-          {errors.lastName && <p>{errors.lastName.message}</p>}
+          {/* {errors.lastName && <p>{errors.lastName.message}</p>} */}
 
-          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+          {roles?.length ? (
+            <TransferList
+              allItems={roles}
+              selectedItems={selectedRoles}
+              setSelectedItems={setSelectedRoles}
+            />
+          ) : null}
+          <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
             <Button variant="outlined" onClick={() => navigate("/accounts")}>
               Cancel
             </Button>

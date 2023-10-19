@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Grid from "@mui/material/Grid";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -22,18 +22,38 @@ function intersection(a: readonly number[], b: readonly number[]) {
   return a.filter((value) => b.indexOf(value) !== -1);
 }
 
-export default function TransferList<T>({
+interface Identifiable {
+  id: number;
+  key: string;
+}
+
+export default function TransferList<T extends Identifiable>({
   allItems,
   selectedItems,
   setSelectedItems,
 }: TransferListProps<T>) {
   const [checked, setChecked] = useState<T[]>([]);
-  const [left, setLeft] = useState<T[]>([]);
+  const [left, setLeft] = useState<T[]>(
+    allItems.filter(
+      (item) =>
+        !selectedItems.find((selectedItem) => selectedItem.key === item.key)
+    )
+  );
+  console.log(selectedItems);
 
-  const leftChecked = intersection(checked, left);
-  const selectedItemsChecked = intersection(checked, selectedItems);
+  const checkedIds = checked.map((item) => item.id);
+  const leftIds = left.map((item) => item.id);
+  const selectedItemsIds = selectedItems.map((selectedItem) => selectedItem.id);
 
-  const handleToggle = (value: number) => () => {
+  const leftCheckedIds = intersection(checkedIds, leftIds);
+
+  const selectedItemsCheckedIds = intersection(checkedIds, selectedItemsIds);
+
+  const getItemById = (id: number): T | undefined => {
+    return allItems.find((item) => item.id === id);
+  };
+
+  const handleToggle = (value: T) => () => {
     const currentIndex = checked.indexOf(value);
     const newChecked = [...checked];
 
@@ -52,15 +72,31 @@ export default function TransferList<T>({
   };
 
   const handleCheckedRight = () => {
-    setSelectedItems(selectedItems.concat(leftChecked));
-    setLeft(not(left, leftChecked));
-    setChecked(not(checked, leftChecked));
+    setSelectedItems(
+      selectedItems.concat(leftCheckedIds.map((id) => getItemById(id)) as T[])
+    );
+
+    setLeft(not(leftIds, leftCheckedIds).map((id) => getItemById(id)) as T[]);
+
+    setChecked(
+      not(checkedIds, leftCheckedIds).map((id) => getItemById(id)) as T[]
+    );
   };
 
   const handleCheckedLeft = () => {
-    setLeft(left.concat(selectedItemsChecked));
-    setSelectedItems(not(selectedItems, selectedItemsChecked));
-    setChecked(not(checked, selectedItemsChecked));
+    setLeft(
+      left.concat(selectedItemsCheckedIds.map((id) => getItemById(id)) as T[])
+    );
+    setSelectedItems(
+      not(selectedItemsIds, selectedItemsCheckedIds).map((id) =>
+        getItemById(id)
+      ) as T[]
+    );
+    setChecked(
+      not(checkedIds, selectedItemsCheckedIds).map((id) =>
+        getItemById(id)
+      ) as T[]
+    );
   };
 
   const handleAllLeft = () => {
@@ -68,53 +104,39 @@ export default function TransferList<T>({
     setSelectedItems([]);
   };
 
-  useEffect(() => {
-    setLeft(allItems);
-  }, []);
-
-  useEffect(() => {
-    console.log("selected items", selectedItems);
-  }, [selectedItems]);
-  const customList = (listItems: T[]) => (
-    <Paper sx={{ width: 200, height: 230, overflow: "auto" }}>
-      <List dense component="div" role="list">
-        {listItems.sort().map((value: number) => {
-          const labelId = `transfer-list-item-${value}-label`;
-
-          return (
-            <ListItem
-              key={value}
-              role="listitem"
-              button
-              onClick={handleToggle(value)}
-            >
-              <ListItemIcon>
-                <Checkbox
-                  checked={checked.indexOf(value) !== -1}
-                  tabIndex={-1}
-                  disableRipple
-                  inputProps={{
-                    "aria-labelledby": labelId,
-                  }}
-                />
-              </ListItemIcon>
-              <ListItemText id={labelId} primary={value} />
-            </ListItem>
-          );
-        })}
-      </List>
-    </Paper>
-  );
-
-  const selectableItems = allItems.filter(
-    (item) => !selectedItems.includes(item)
-  );
-
   return (
     <Grid container spacing={2} justifyContent="center" alignItems="center">
       <Grid item>
-        {customList(selectableItems.length ? selectableItems : left)}
+        <Paper sx={{ width: 200, height: 230, overflow: "auto" }}>
+          <List dense component="div" role="list">
+            {left.map((value: T) => {
+              const labelId = `transfer-list-item-${value}-label`;
+
+              return (
+                <ListItem
+                  key={value.id}
+                  role="listitem"
+                  onClick={handleToggle(value)}
+                >
+                  <ListItemIcon>
+                    <Checkbox
+                      checked={checked.indexOf(value) !== -1}
+                      tabIndex={-1}
+                      disableRipple
+                      inputProps={{
+                        "aria-labelledby": labelId,
+                      }}
+                    />
+                  </ListItemIcon>
+
+                  <ListItemText id={labelId} primary={value.key} />
+                </ListItem>
+              );
+            })}
+          </List>
+        </Paper>
       </Grid>
+
       <Grid item>
         <Grid container direction="column" alignItems="center">
           <Button
@@ -127,26 +149,29 @@ export default function TransferList<T>({
           >
             ≫
           </Button>
+
           <Button
             sx={{ my: 0.5 }}
             variant="outlined"
             size="small"
             onClick={handleCheckedRight}
-            disabled={leftChecked.length === 0}
+            disabled={leftCheckedIds.length === 0}
             aria-label="move selected selectedItems"
           >
             &gt;
           </Button>
+
           <Button
             sx={{ my: 0.5 }}
             variant="outlined"
             size="small"
             onClick={handleCheckedLeft}
-            disabled={selectedItemsChecked.length === 0}
+            disabled={selectedItemsCheckedIds.length === 0}
             aria-label="move selected left"
           >
             &lt;
           </Button>
+
           <Button
             sx={{ my: 0.5 }}
             variant="outlined"
@@ -159,7 +184,37 @@ export default function TransferList<T>({
           </Button>
         </Grid>
       </Grid>
-      <Grid item>{customList(selectedItems)}</Grid>
+
+      <Grid item>
+        <Paper sx={{ width: 200, height: 230, overflow: "auto" }}>
+          <List dense component="div" role="list">
+            {selectedItems.map((value: T) => {
+              const labelId = `transfer-list-item-${value}-label`;
+
+              return (
+                <ListItem
+                  key={value.id}
+                  role="listitem"
+                  onClick={handleToggle(value)}
+                >
+                  <ListItemIcon>
+                    <Checkbox
+                      checked={checked.indexOf(value) !== -1}
+                      tabIndex={-1}
+                      disableRipple
+                      inputProps={{
+                        "aria-labelledby": labelId,
+                      }}
+                    />
+                  </ListItemIcon>
+
+                  <ListItemText id={labelId} primary={value.key} />
+                </ListItem>
+              );
+            })}
+          </List>
+        </Paper>
+      </Grid>
     </Grid>
   );
 }

@@ -11,6 +11,7 @@ import AccountPage from "./features/Layout/accounts/AccountPage.tsx";
 import AccountAddPage from "./features/Layout/accounts/AccountAddPage.tsx";
 import RolePage from "./features/Layout/roles/RolePage.tsx";
 import RoleAddPage from "./features/Layout/roles/RoleAddPage.tsx";
+import { ToastContainer } from "react-toastify";
 
 const router = createBrowserRouter([
   {
@@ -59,6 +60,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Provider store={store}>
       <RouterProvider router={router} />
+      <ToastContainer />
     </Provider>
   </React.StrictMode>
 );

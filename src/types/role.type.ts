@@ -8,6 +8,18 @@ export const roleSchema = z.object({
   description: z.string().min(2).max(300),
   permissions: z.array(permissionSchema),
 });
+export const roleSchemaResponse = z.object({
+  id: z.number(),
+  key: z.string(),
+  title: z.string().min(2).max(20),
+  description: z.string().min(2).max(300),
+});
+export const roleNoIdSchema = z.object({
+  key: z.string(),
+  title: z.string().min(2).max(20),
+  description: z.string().min(2).max(300),
+  permissions: z.number().array(),
+});
 export const roleFormSchema = z.object({
   key: z.string(),
   title: z.string().min(2).max(20),
@@ -16,3 +28,5 @@ export const roleFormSchema = z.object({
 
 export type Role = z.TypeOf<typeof roleSchema>;
 export type RoleNoIdNoPermissions = z.TypeOf<typeof roleFormSchema>;
+export type RoleNoId = z.TypeOf<typeof roleNoIdSchema>;
+export type RoleSchemaResponseType = z.TypeOf<typeof roleSchemaResponse>;

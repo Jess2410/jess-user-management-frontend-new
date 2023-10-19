@@ -1,7 +1,13 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithRetry } from "./prepareHeader";
 import { ENV } from "../constants/env.constant";
-import { Account, accountSchema } from "../types/account.type";
+import {
+  Account,
+  AccountIdArray,
+  AccountNoId,
+  AccountSchemaResponseType,
+  accountSchema,
+} from "../types/account.type";
 
 const ACCOUNT_API_ENDPOINTS = {
   BASE_URL: "/",
@@ -39,6 +45,15 @@ export const accountApi = createApi({
         return accountSchema.parse(rawData);
       },
     }),
+    addAccount: build.mutation<AccountSchemaResponseType, AccountNoId>({
+      query: (account) => ({
+        url: ACCOUNT_API_ENDPOINTS.ACCOUNT,
+        method: "POST",
+        body: account,
+      }),
+      invalidatesTags: ["Accounts"],
+      transformResponse: (rowData) => accountSchema.parse(rowData),
+    }),
   }),
 });
 
@@ -46,4 +61,5 @@ export const {
   useGetAccountsQuery,
   useGetAccountByIdQuery,
   useLazyGetAccountByIdQuery,
+  useAddAccountMutation,
 } = accountApi;

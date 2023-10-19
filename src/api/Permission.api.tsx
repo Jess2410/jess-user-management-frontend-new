@@ -1,6 +1,10 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithRetry } from "./prepareHeader";
-import { Permission, permissionSchema } from "../types/permission.type";
+import {
+  Permission,
+  PermissionNoId,
+  permissionSchema,
+} from "../types/permission.type";
 import { ENV } from "../constants/env.constant";
 import { PERMISSIONS_LINK } from "../constants/routes";
 
@@ -41,6 +45,15 @@ export const permissionApi = createApi({
       },
       providesTags: ["Permissions"],
     }),
+    addPermission: build.mutation<Permission, PermissionNoId>({
+      query: (permission) => ({
+        url: `${PERMISSION_API_ENDPOINTS.PERMISSION}`,
+        method: "POST",
+        body: permission,
+      }),
+      invalidatesTags: ["Permissions"],
+      transformResponse: (rowData) => permissionSchema.parse(rowData),
+    }),
   }),
 });
 
@@ -49,4 +62,5 @@ export const {
   useLazyGetPermissionsQuery,
   useGetPermissionByIdQuery,
   useLazyGetPermissionByIdQuery,
+  useAddPermissionMutation,
 } = permissionApi;
