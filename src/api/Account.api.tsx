@@ -54,6 +54,15 @@ export const accountApi = createApi({
       invalidatesTags: ["Accounts"],
       transformResponse: (rowData) => accountSchema.parse(rowData),
     }),
+    updateAccountById: build.mutation<Account, Account>({
+      query: (account) => ({
+        url: `${ACCOUNT_API_ENDPOINTS.ACCOUNT}/${account.id}`,
+        method: "PATCH",
+        body: account,
+      }),
+      invalidatesTags: ["Accounts"],
+      transformResponse: (rowData) => accountSchema.parse(rowData),
+    }),
   }),
 });
 
@@ -62,4 +71,5 @@ export const {
   useGetAccountByIdQuery,
   useLazyGetAccountByIdQuery,
   useAddAccountMutation,
+  useUpdateAccountByIdMutation,
 } = accountApi;

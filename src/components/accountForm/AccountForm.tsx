@@ -3,28 +3,29 @@ import { Button, Container, TextField, CircularProgress } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, useParams } from "react-router-dom";
-import { AccountNoId, accountFormSchema } from "../../types/account.type";
-import {
-  useAddAccountMutation,
-  useLazyGetAccountByIdQuery,
-} from "../../api/Account.api";
+import { accountFormSchema } from "../../types/account.type";
+import { useLazyGetAccountByIdQuery } from "../../api/Account.api";
 import { useState } from "react";
 import { useGetRolesQuery } from "../../api/Role.api";
 import TransferList from "../transferList/TransferList";
-import { ACCOUNTS_LINK } from "../../constants/routes";
-import { useToast } from "../../hooks/useToast";
 import { Role } from "../../types/role.type";
+import useAccountUpdate from "../../features/Layout/accounts/hooks/useAccountUpdate";
 
-const AccountForm = () => {
+type AccountProps = {
+  onSubmit: () => void;
+  selectedRoles: Role[];
+  setSelectedRoles: (roles: Role[]) => void;
+};
+const AccountForm: React.FC<AccountProps> = ({
+  onSubmit,
+  selectedRoles,
+  setSelectedRoles,
+}) => {
   const navigate = useNavigate();
   const params = useParams();
-  const { showToast } = useToast();
 
-  const [addAccount] = useAddAccountMutation();
   const { data: roles } = useGetRolesQuery();
   const [getAccountById] = useLazyGetAccountByIdQuery();
-
-  const [selectedRoles, setSelectedRoles] = useState<Role[]>([]);
 
   const {
     handleSubmit,
@@ -35,7 +36,6 @@ const AccountForm = () => {
       if (params.id) {
         const { data: account } = await getAccountById(Number(params.id));
         setSelectedRoles(account?.roles || []);
-        console.log(setSelectedRoles);
         return account;
       } else {
         return { firstName: "", lastName: "", roles: [] };
@@ -45,44 +45,6 @@ const AccountForm = () => {
     resolver: zodResolver(accountFormSchema),
   });
 
-  const createAccount = async (newAccount: AccountNoId) => {
-    await addAccount({
-      lastName: newAccount.lastName,
-      firstName: newAccount.firstName,
-      roles: selectedRoles.map((selectedRole) => selectedRole.id),
-    })
-      .then((response) => {
-        showToast("Utilisateur ajouté avec succès", {
-          type: "success",
-        });
-
-        if ("error" in response) {
-          const typedError = response as {
-            error: { data: AccountNoId; status: number };
-          };
-          if (typedError.error.status === 500) {
-            showToast(
-              "Une erreur est survenue ! Merci de contacter le service client.",
-              {
-                type: "error",
-                autoClose: 3000,
-              }
-            );
-          }
-        }
-        navigate(ACCOUNTS_LINK);
-      })
-      .catch(() => {
-        showToast(
-          "Une erreur est survenue ! Merci de contacter le service client.",
-          {
-            type: "error",
-            autoClose: 3000,
-          }
-        );
-      });
-  };
-
   if (isLoading) {
     return <CircularProgress />;
   }
@@ -90,7 +52,7 @@ const AccountForm = () => {
   return (
     <div>
       <Container>
-        <form onSubmit={handleSubmit(createAccount)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <Box sx={{ mb: 3 }}>
             <Controller
               control={control}

@@ -39,7 +39,6 @@ export default function TransferList<T extends Identifiable>({
         !selectedItems.find((selectedItem) => selectedItem.key === item.key)
     )
   );
-  console.log(selectedItems);
 
   const checkedIds = checked.map((item) => item.id);
   const leftIds = left.map((item) => item.id);
@@ -109,12 +108,12 @@ export default function TransferList<T extends Identifiable>({
       <Grid item>
         <Paper sx={{ width: 200, height: 230, overflow: "auto" }}>
           <List dense component="div" role="list">
-            {left.map((value: T) => {
+            {left.map((value: T, index) => {
               const labelId = `transfer-list-item-${value}-label`;
 
               return (
                 <ListItem
-                  key={value.id}
+                  key={index}
                   role="listitem"
                   onClick={handleToggle(value)}
                 >
@@ -188,12 +187,12 @@ export default function TransferList<T extends Identifiable>({
       <Grid item>
         <Paper sx={{ width: 200, height: 230, overflow: "auto" }}>
           <List dense component="div" role="list">
-            {selectedItems.map((value: T) => {
+            {selectedItems.map((value: T, index) => {
               const labelId = `transfer-list-item-${value}-label`;
 
               return (
                 <ListItem
-                  key={value.id}
+                  key={index}
                   role="listitem"
                   onClick={handleToggle(value)}
                 >

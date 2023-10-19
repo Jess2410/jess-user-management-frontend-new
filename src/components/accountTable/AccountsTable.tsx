@@ -11,7 +11,6 @@ export default function AccountsTable() {
 
   const handleUpdate = (id: number) => {
     navigate(`/account/${id}`);
-    console.log("update", id);
   };
   const handleDelete = (id: number) => {
     console.log("delete", id);

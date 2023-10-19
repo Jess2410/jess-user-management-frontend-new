@@ -12,6 +12,7 @@ import AccountAddPage from "./features/Layout/accounts/AccountAddPage.tsx";
 import RolePage from "./features/Layout/roles/RolePage.tsx";
 import RoleAddPage from "./features/Layout/roles/RoleAddPage.tsx";
 import { ToastContainer } from "react-toastify";
+import AccountUpdatePage from "./features/Layout/accounts/AccountUpdatePage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -40,7 +41,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/account/:id",
-    element: <AccountAddPage />,
+    element: <AccountUpdatePage />,
   },
   {
     path: "/roles",
