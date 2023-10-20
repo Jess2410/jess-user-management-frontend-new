@@ -28,6 +28,7 @@ import {
   ROLES_LINK,
 } from "../../constants/routes";
 import { Link } from "react-router-dom";
+import DarkModeButtton from "../../components/darkModeButton/DarkModeButtton";
 
 const drawerWidth = 240;
 
@@ -151,6 +152,7 @@ export default function Layout({ children }: React.PropsWithChildren) {
           >
             User Management
           </Typography>
+          <DarkModeButtton />
           <Button color="inherit">Login</Button>
         </Toolbar>
       </AppBar>
