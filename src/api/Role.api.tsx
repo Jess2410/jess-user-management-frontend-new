@@ -58,6 +58,24 @@ export const roleApi = createApi({
       // ce que le serveur repond au client
       transformResponse: (rowData) => roleSchemaResponse.parse(rowData),
     }),
+    updateRoleById: build.mutation<Role, Role>({
+      query: (role) => ({
+        url: `${ROLE_API_ENDPOINTS.ROLE}/${role.id}`,
+        method: "PATCH",
+        body: role,
+      }),
+      invalidatesTags: ["Roles"],
+      // transformResponse: (rowData) => roleSchema.parse(rowData),
+    }),
+    deleteRoleById: build.mutation<RoleSchemaResponseType, number>({
+      query: (roleId) => ({
+        url: `${ROLE_API_ENDPOINTS.ROLE}/${roleId}`,
+        method: "DELETE",
+        body: roleId,
+      }),
+      invalidatesTags: ["Roles"],
+      // transformResponse: (rowData) => roleSchema.parse(rowData),
+    }),
   }),
 });
 
@@ -66,4 +84,6 @@ export const {
   useGetRoleByIdQuery,
   useLazyGetRoleByIdQuery,
   useAddRoleMutation,
+  useUpdateRoleByIdMutation,
+  useDeleteRoleByIdMutation,
 } = roleApi;

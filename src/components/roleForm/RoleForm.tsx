@@ -3,34 +3,29 @@ import { Button, Container, TextField, CircularProgress } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  RoleNoId,
-  RoleNoIdNoPermissions,
-  roleFormSchema,
-} from "../../types/role.type";
-import {
-  useAddRoleMutation,
-  useLazyGetRoleByIdQuery,
-} from "../../api/Role.api";
+import { roleFormSchema } from "../../types/role.type";
+import { useLazyGetRoleByIdQuery } from "../../api/Role.api";
 import TransferList from "../transferList/TransferList";
 import { useGetPermissionsQuery } from "../../api/Permission.api";
-import { useState } from "react";
-import { useToast } from "../../hooks/useToast";
-import { ROLES_LINK } from "../../constants/routes";
+import { FC } from "react";
 import { Permission } from "../../types/permission.type";
 
-const RoleForm = () => {
+type RoleFormProps = {
+  onSubmit: () => void;
+  selectedPermissions: Permission[];
+  setSelectedPermissions: (permissions: Permission[]) => void;
+};
+const RoleForm: FC<RoleFormProps> = ({
+  onSubmit,
+  selectedPermissions,
+  setSelectedPermissions,
+}) => {
   const navigate = useNavigate();
   const params = useParams();
-  const { showToast } = useToast();
 
-  const [addRole] = useAddRoleMutation();
   const { data: permissions } = useGetPermissionsQuery();
 
   const [getRoleById] = useLazyGetRoleByIdQuery();
-  const [selectedPermissions, setSelectedPermissions] = useState<Permission[]>(
-    []
-  );
 
   const {
     handleSubmit,
@@ -49,47 +44,6 @@ const RoleForm = () => {
     resolver: zodResolver(roleFormSchema),
   });
 
-  const createRole = async (newRole: RoleNoIdNoPermissions) => {
-    await addRole({
-      key: newRole.key,
-      title: newRole.title,
-      description: newRole.description,
-      permissions: selectedPermissions.map(
-        (selectedPermission) => selectedPermission.id
-      ),
-    })
-      .then((response) => {
-        showToast("Rôle ajouté avec succès", {
-          type: "success",
-        });
-
-        if ("error" in response) {
-          const typedError = response as {
-            error: { data: RoleNoId; status: number };
-          };
-          if (typedError.error.status === 500) {
-            showToast(
-              "Une erreur est survenue ! Merci de contacter le service client.",
-              {
-                type: "error",
-                autoClose: 3000,
-              }
-            );
-          }
-        }
-        navigate(ROLES_LINK);
-      })
-      .catch(() => {
-        showToast(
-          "Une erreur est survenue ! Merci de contacter le service client.",
-          {
-            type: "error",
-            autoClose: 3000,
-          }
-        );
-      });
-  };
-
   if (isLoading) {
     return <CircularProgress />;
   }
@@ -97,7 +51,7 @@ const RoleForm = () => {
   return (
     <div>
       <Container>
-        <form onSubmit={handleSubmit(createRole)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <Box sx={{ mb: 3 }}>
             <Controller
               control={control}
@@ -159,7 +113,7 @@ const RoleForm = () => {
               Cancel
             </Button>
             <Button type="submit" variant="contained">
-              Add
+              VALIDER
             </Button>
           </Box>
         </form>

@@ -96,7 +96,7 @@ const AccountForm: React.FC<AccountFormProps> = ({
               Cancel
             </Button>
             <Button type="submit" variant="contained">
-              Add
+              VALIDER
             </Button>
           </Box>
         </form>

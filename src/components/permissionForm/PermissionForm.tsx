@@ -99,7 +99,7 @@ const PermissionForm: React.FC<PermissionFormProps> = ({ onSubmit }) => {
               Cancel
             </Button>
             <Button type="submit" variant="contained">
-              Add
+              VALIDER
             </Button>
           </Box>
         </form>

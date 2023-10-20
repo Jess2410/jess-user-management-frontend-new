@@ -11,7 +11,6 @@ export default function RolesTable() {
 
   const handleUpdate = (id: number) => {
     navigate(`/role/${id}`);
-    console.log("update", id);
   };
   const handleDelete = (id: number) => {
     console.log("delete", id);

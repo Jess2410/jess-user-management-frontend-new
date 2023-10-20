@@ -43,14 +43,14 @@ export const accountApi = createApi({
         return accountSchema.parse(rawData);
       },
     }),
-    addAccount: build.mutation<AccountSchemaResponseType, AccountNoId>({
+    addAccount: build.mutation<AccountSchemaResponseType, Account>({
       query: (account) => ({
         url: ACCOUNT_API_ENDPOINTS.ACCOUNT,
         method: "POST",
         body: account,
       }),
       invalidatesTags: ["Accounts"],
-      transformResponse: (rowData) => accountSchema.parse(rowData),
+      // transformResponse: (rowData) => accountSchema.parse(rowData),
     }),
     updateAccountById: build.mutation<Account, Account>({
       query: (account) => ({
@@ -61,6 +61,15 @@ export const accountApi = createApi({
       invalidatesTags: ["Accounts"],
       transformResponse: (rowData) => accountSchema.parse(rowData),
     }),
+    deleteAccountById: build.mutation<AccountSchemaResponseType, number>({
+      query: (accountId) => ({
+        url: `${ACCOUNT_API_ENDPOINTS.ACCOUNT}/${accountId}`,
+        method: "DELETE",
+        body: accountId,
+      }),
+      invalidatesTags: ["Accounts"],
+      // transformResponse: (rowData) => accountSchema.parse(rowData),
+    }),
   }),
 });
 
@@ -70,4 +79,5 @@ export const {
   useLazyGetAccountByIdQuery,
   useAddAccountMutation,
   useUpdateAccountByIdMutation,
+  useDeleteAccountByIdMutation,
 } = accountApi;
