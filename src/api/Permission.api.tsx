@@ -1,6 +1,10 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithRetry } from "./prepareHeader";
-import { Permission, permissionSchema } from "../types/permission.type";
+import {
+  Permission,
+  PermissionNoId,
+  permissionSchema,
+} from "../types/permission.type";
 import { ENV } from "../constants/env.constant";
 import { PERMISSIONS_LINK } from "../constants/routes";
 
@@ -41,11 +45,42 @@ export const permissionApi = createApi({
       },
       providesTags: ["Permissions"],
     }),
+    addPermission: build.mutation<Permission, PermissionNoId>({
+      query: (permission) => ({
+        url: `${PERMISSION_API_ENDPOINTS.PERMISSION}`,
+        method: "POST",
+        body: permission,
+      }),
+      invalidatesTags: ["Permissions"],
+      transformResponse: (rowData) => permissionSchema.parse(rowData),
+    }),
+    updatePermissionById: build.mutation<Permission, Permission>({
+      query: (permission) => ({
+        url: `${PERMISSION_API_ENDPOINTS.PERMISSION}/${permission.id}`,
+        method: "PATCH",
+        body: permission,
+      }),
+      invalidatesTags: ["Permissions"],
+      transformResponse: (rowData) => permissionSchema.parse(rowData),
+    }),
+    deletePermissionById: build.mutation<Permission, number>({
+      query: (id: number) => ({
+        url: `${PERMISSION_API_ENDPOINTS.PERMISSION}/${id}`,
+        method: "DELETE",
+        body: id,
+      }),
+      invalidatesTags: ["Permissions"],
+      transformResponse: (rawData) => permissionSchema.parse(rawData),
+    }),
   }),
 });
 
 export const {
   useGetPermissionsQuery,
+  useLazyGetPermissionsQuery,
   useGetPermissionByIdQuery,
   useLazyGetPermissionByIdQuery,
+  useAddPermissionMutation,
+  useUpdatePermissionByIdMutation,
+  useDeletePermissionByIdMutation,
 } = permissionApi;

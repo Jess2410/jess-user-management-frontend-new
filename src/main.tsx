@@ -11,6 +11,10 @@ import AccountPage from "./features/Layout/accounts/AccountPage.tsx";
 import AccountAddPage from "./features/Layout/accounts/AccountAddPage.tsx";
 import RolePage from "./features/Layout/roles/RolePage.tsx";
 import RoleAddPage from "./features/Layout/roles/RoleAddPage.tsx";
+import { ToastContainer } from "react-toastify";
+import AccountUpdatePage from "./features/Layout/accounts/AccountUpdatePage.tsx";
+import PermissionUpdatePage from "./features/Layout/permissions/PermissionUpdatePage.tsx";
+import RoleUpdatePage from "./features/Layout/roles/RoleUpdatePage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -27,7 +31,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/permission/:id",
-    element: <PermissionAddPage />,
+    element: <PermissionUpdatePage />,
   },
   {
     path: "/accounts",
@@ -39,7 +43,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/account/:id",
-    element: <AccountAddPage />,
+    element: <AccountUpdatePage />,
   },
   {
     path: "/roles",
@@ -51,7 +55,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/role/:id",
-    element: <RoleAddPage />,
+    element: <RoleUpdatePage />,
   },
 ]);
 
@@ -59,6 +63,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Provider store={store}>
       <RouterProvider router={router} />
+      <ToastContainer />
     </Provider>
   </React.StrictMode>
 );

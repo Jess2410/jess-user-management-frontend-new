@@ -2,7 +2,13 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithRetry } from "./prepareHeader";
 import { ENV } from "../constants/env.constant";
 import { ROLES_LINK } from "../constants/routes";
-import { Role, roleSchema } from "../types/role.type";
+import {
+  Role,
+  RoleNoId,
+  RoleSchemaResponseType,
+  roleSchema,
+  roleSchemaResponse,
+} from "../types/role.type";
 
 const ROLE_API_ENDPOINTS = {
   BASE_URL: "/",
@@ -41,6 +47,35 @@ export const roleApi = createApi({
       },
       providesTags: ["Roles"],
     }),
+    addRole: build.mutation<RoleSchemaResponseType, RoleNoId>({
+      // ce que le client envoie au serveur
+      query: (role) => ({
+        url: ROLE_API_ENDPOINTS.ROLE,
+        method: "POST",
+        body: role,
+      }),
+      invalidatesTags: ["Roles"],
+      // ce que le serveur repond au client
+      transformResponse: (rowData) => roleSchemaResponse.parse(rowData),
+    }),
+    updateRoleById: build.mutation<Role, Role>({
+      query: (role) => ({
+        url: `${ROLE_API_ENDPOINTS.ROLE}/${role.id}`,
+        method: "PATCH",
+        body: role,
+      }),
+      invalidatesTags: ["Roles"],
+      // transformResponse: (rowData) => roleSchema.parse(rowData),
+    }),
+    deleteRoleById: build.mutation<RoleSchemaResponseType, number>({
+      query: (roleId) => ({
+        url: `${ROLE_API_ENDPOINTS.ROLE}/${roleId}`,
+        method: "DELETE",
+        body: roleId,
+      }),
+      invalidatesTags: ["Roles"],
+      // transformResponse: (rowData) => roleSchema.parse(rowData),
+    }),
   }),
 });
 
@@ -48,4 +83,7 @@ export const {
   useGetRolesQuery,
   useGetRoleByIdQuery,
   useLazyGetRoleByIdQuery,
+  useAddRoleMutation,
+  useUpdateRoleByIdMutation,
+  useDeleteRoleByIdMutation,
 } = roleApi;

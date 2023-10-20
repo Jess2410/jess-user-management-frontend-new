@@ -1,26 +1,31 @@
 import Box from "@mui/material/Box";
 import { Button, Container, TextField, CircularProgress } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
-import { permissionSchemaNoId } from "../../types/permission.type";
+import {
+  PermissionNoId,
+  permissionSchemaNoId,
+} from "../../types/permission.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, useParams } from "react-router-dom";
+import "react-toastify/dist/ReactToastify.css";
 import { useLazyGetPermissionByIdQuery } from "../../api/Permission.api";
 
-const PermissionForm = () => {
-  const params = useParams();
+type PermissionFormProps = {
+  onSubmit: (permissionForm: PermissionNoId) => void;
+};
 
-  const [getPermissionById, { data }] = useLazyGetPermissionByIdQuery();
-
+const PermissionForm: React.FC<PermissionFormProps> = ({ onSubmit }) => {
   const navigate = useNavigate();
+  const params = useParams();
+  const [getPermissionById] = useLazyGetPermissionByIdQuery();
   const {
     handleSubmit,
     control,
     formState: { isLoading, errors },
   } = useForm({
     defaultValues: async () => {
-      if (params.id) {
+      if (Number(params.id)) {
         const { data } = await getPermissionById(Number(params.id));
-        console.log("DATAAAAAAAAAA:", data);
         if (data) {
           return data;
         } else {
@@ -40,7 +45,7 @@ const PermissionForm = () => {
   return (
     <div>
       <Container>
-        <form onSubmit={handleSubmit((data) => console.log(data))}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <Box sx={{ mb: 3 }}>
             <Controller
               control={control}
@@ -89,12 +94,12 @@ const PermissionForm = () => {
             />
             {errors.description && <p>{errors.description.message}</p>}
           </Box>
-          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+          <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
             <Button variant="outlined" onClick={() => navigate("/permissions")}>
               Cancel
             </Button>
             <Button type="submit" variant="contained">
-              Add
+              VALIDER
             </Button>
           </Box>
         </form>

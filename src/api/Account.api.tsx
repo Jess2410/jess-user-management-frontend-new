@@ -1,7 +1,11 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithRetry } from "./prepareHeader";
 import { ENV } from "../constants/env.constant";
-import { Account, accountSchema } from "../types/account.type";
+import {
+  Account,
+  AccountSchemaResponseType,
+  accountSchema,
+} from "../types/account.type";
 
 const ACCOUNT_API_ENDPOINTS = {
   BASE_URL: "/",
@@ -39,6 +43,33 @@ export const accountApi = createApi({
         return accountSchema.parse(rawData);
       },
     }),
+    addAccount: build.mutation<AccountSchemaResponseType, Account>({
+      query: (account) => ({
+        url: ACCOUNT_API_ENDPOINTS.ACCOUNT,
+        method: "POST",
+        body: account,
+      }),
+      invalidatesTags: ["Accounts"],
+      // transformResponse: (rowData) => accountSchema.parse(rowData),
+    }),
+    updateAccountById: build.mutation<Account, Account>({
+      query: (account) => ({
+        url: `${ACCOUNT_API_ENDPOINTS.ACCOUNT}/${account.id}`,
+        method: "PATCH",
+        body: account,
+      }),
+      invalidatesTags: ["Accounts"],
+      transformResponse: (rowData) => accountSchema.parse(rowData),
+    }),
+    deleteAccountById: build.mutation<AccountSchemaResponseType, number>({
+      query: (accountId) => ({
+        url: `${ACCOUNT_API_ENDPOINTS.ACCOUNT}/${accountId}`,
+        method: "DELETE",
+        body: accountId,
+      }),
+      invalidatesTags: ["Accounts"],
+      // transformResponse: (rowData) => accountSchema.parse(rowData),
+    }),
   }),
 });
 
@@ -46,4 +77,7 @@ export const {
   useGetAccountsQuery,
   useGetAccountByIdQuery,
   useLazyGetAccountByIdQuery,
+  useAddAccountMutation,
+  useUpdateAccountByIdMutation,
+  useDeleteAccountByIdMutation,
 } = accountApi;

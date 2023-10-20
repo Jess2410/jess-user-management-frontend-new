@@ -1,13 +1,13 @@
 import AccountForm from "../../../components/accountForm/AccountForm";
 import Layout from "../Layout";
-import UseAccountAdd from "./hooks/useAccountAdd";
+import useAccountUpdate from "./hooks/useAccountUpdate";
 
-const AccountAddPage = () => {
-  const { createAccount, selectedRoles, setSelectedRoles } = UseAccountAdd();
+const AccountUpdatePage = () => {
+  const { editAccount, selectedRoles, setSelectedRoles } = useAccountUpdate();
   return (
     <Layout>
       <AccountForm
-        onSubmit={createAccount}
+        onSubmit={editAccount}
         selectedRoles={selectedRoles}
         setSelectedRoles={setSelectedRoles}
       />
@@ -15,4 +15,4 @@ const AccountAddPage = () => {
   );
 };
 
-export default AccountAddPage;
+export default AccountUpdatePage;
