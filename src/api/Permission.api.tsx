@@ -54,6 +54,24 @@ export const permissionApi = createApi({
       invalidatesTags: ["Permissions"],
       transformResponse: (rowData) => permissionSchema.parse(rowData),
     }),
+    updatePermissionById: build.mutation<Permission, Permission>({
+      query: (permission) => ({
+        url: `${PERMISSION_API_ENDPOINTS.PERMISSION}/${permission.id}`,
+        method: "PATCH",
+        body: permission,
+      }),
+      invalidatesTags: ["Permissions"],
+      transformResponse: (rowData) => permissionSchema.parse(rowData),
+    }),
+    deletePermissionById: build.mutation<Permission, number>({
+      query: (id: number) => ({
+        url: `${PERMISSION_API_ENDPOINTS.PERMISSION}/${id}`,
+        method: "DELETE",
+        body: id,
+      }),
+      invalidatesTags: ["Permissions"],
+      transformResponse: (rawData) => permissionSchema.parse(rawData),
+    }),
   }),
 });
 
@@ -63,4 +81,5 @@ export const {
   useGetPermissionByIdQuery,
   useLazyGetPermissionByIdQuery,
   useAddPermissionMutation,
+  useUpdatePermissionByIdMutation,
 } = permissionApi;

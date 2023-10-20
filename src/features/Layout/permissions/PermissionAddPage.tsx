@@ -1,10 +1,14 @@
+import { FC } from "react";
 import PermissionForm from "../../../components/permissionForm/PermissionForm";
 import Layout from "../Layout";
+import UsePermissionAdd from "./hooks/usePermissionAdd";
 
-const PermissionAddPage = () => {
+const PermissionAddPage: FC = () => {
+  const { createPermission } = UsePermissionAdd();
+
   return (
     <Layout>
-      <PermissionForm />
+      <PermissionForm onSubmit={createPermission} />
     </Layout>
   );
 };

@@ -3,8 +3,6 @@ import { baseQueryWithRetry } from "./prepareHeader";
 import { ENV } from "../constants/env.constant";
 import {
   Account,
-  AccountIdArray,
-  AccountNoId,
   AccountSchemaResponseType,
   accountSchema,
 } from "../types/account.type";

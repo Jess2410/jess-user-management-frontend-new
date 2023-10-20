@@ -13,6 +13,7 @@ import RolePage from "./features/Layout/roles/RolePage.tsx";
 import RoleAddPage from "./features/Layout/roles/RoleAddPage.tsx";
 import { ToastContainer } from "react-toastify";
 import AccountUpdatePage from "./features/Layout/accounts/AccountUpdatePage.tsx";
+import PermissionUpdatePage from "./features/Layout/permissions/PermissionUpdatePage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -29,7 +30,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/permission/:id",
-    element: <PermissionAddPage />,
+    element: <PermissionUpdatePage />,
   },
   {
     path: "/accounts",

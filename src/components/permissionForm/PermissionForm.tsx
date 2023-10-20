@@ -7,31 +7,24 @@ import {
 } from "../../types/permission.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  useAddPermissionMutation,
-  useLazyGetPermissionByIdQuery,
-} from "../../api/Permission.api";
-import { useToast } from "../../hooks/useToast";
-import { PERMISSIONS_LINK } from "../../constants/routes";
 import "react-toastify/dist/ReactToastify.css";
+import { useLazyGetPermissionByIdQuery } from "../../api/Permission.api";
 
-const PermissionForm = () => {
-  const params = useParams();
+type PermissionFormProps = {
+  onSubmit: (permissionForm: PermissionNoId) => void;
+};
 
-  const { showToast } = useToast();
-
+const PermissionForm: React.FC<PermissionFormProps> = ({ onSubmit }) => {
   const navigate = useNavigate();
+  const params = useParams();
   const [getPermissionById] = useLazyGetPermissionByIdQuery();
-
-  const [addPermission] = useAddPermissionMutation();
-
   const {
     handleSubmit,
     control,
     formState: { isLoading, errors },
   } = useForm({
     defaultValues: async () => {
-      if (params.id) {
+      if (Number(params.id)) {
         const { data } = await getPermissionById(Number(params.id));
         if (data) {
           return data;
@@ -45,44 +38,6 @@ const PermissionForm = () => {
     resolver: zodResolver(permissionSchemaNoId),
   });
 
-  const createPermission = async (newPermission: PermissionNoId) => {
-    await addPermission({
-      key: newPermission.key,
-      title: newPermission.title,
-      description: newPermission.description,
-    })
-      .then((response) => {
-        showToast("Permission ajoutée avec succès", {
-          type: "success",
-        });
-
-        if ("error" in response) {
-          const typedError = response as {
-            error: { data: PermissionNoId; status: number };
-          };
-          if (typedError.error.status === 500) {
-            showToast(
-              "Une erreur est survenue ! Merci de contacter le service client.",
-              {
-                type: "error",
-                autoClose: 3000,
-              }
-            );
-          }
-        }
-        navigate(PERMISSIONS_LINK);
-      })
-      .catch(() => {
-        showToast(
-          "Une erreur est survenue ! Merci de contacter le service client.",
-          {
-            type: "error",
-            autoClose: 3000,
-          }
-        );
-      });
-  };
-
   if (isLoading) {
     return <CircularProgress />;
   }
@@ -90,7 +45,7 @@ const PermissionForm = () => {
   return (
     <div>
       <Container>
-        <form onSubmit={handleSubmit(createPermission)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <Box sx={{ mb: 3 }}>
             <Controller
               control={control}

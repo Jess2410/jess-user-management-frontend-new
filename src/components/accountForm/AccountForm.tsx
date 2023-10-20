@@ -5,18 +5,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, useParams } from "react-router-dom";
 import { accountFormSchema } from "../../types/account.type";
 import { useLazyGetAccountByIdQuery } from "../../api/Account.api";
-import { useState } from "react";
 import { useGetRolesQuery } from "../../api/Role.api";
 import TransferList from "../transferList/TransferList";
 import { Role } from "../../types/role.type";
-import useAccountUpdate from "../../features/Layout/accounts/hooks/useAccountUpdate";
 
-type AccountProps = {
+type AccountFormProps = {
   onSubmit: () => void;
   selectedRoles: Role[];
   setSelectedRoles: (roles: Role[]) => void;
 };
-const AccountForm: React.FC<AccountProps> = ({
+const AccountForm: React.FC<AccountFormProps> = ({
   onSubmit,
   selectedRoles,
   setSelectedRoles,
