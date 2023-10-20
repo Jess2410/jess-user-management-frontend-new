@@ -82,4 +82,5 @@ export const {
   useLazyGetPermissionByIdQuery,
   useAddPermissionMutation,
   useUpdatePermissionByIdMutation,
+  useDeletePermissionByIdMutation,
 } = permissionApi;
