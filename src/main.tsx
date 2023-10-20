@@ -15,6 +15,7 @@ import { ToastContainer } from "react-toastify";
 import AccountUpdatePage from "./features/Layout/accounts/AccountUpdatePage.tsx";
 import PermissionUpdatePage from "./features/Layout/permissions/PermissionUpdatePage.tsx";
 import RoleUpdatePage from "./features/Layout/roles/RoleUpdatePage.tsx";
+import CustomThemeProvider from "./context/CustomThemeProvider.tsx";
 
 const router = createBrowserRouter([
   {
@@ -61,9 +62,11 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <Provider store={store}>
-      <RouterProvider router={router} />
-      <ToastContainer />
-    </Provider>
+    <CustomThemeProvider>
+      <Provider store={store}>
+        <RouterProvider router={router} />
+        <ToastContainer />
+      </Provider>
+    </CustomThemeProvider>
   </React.StrictMode>
 );
